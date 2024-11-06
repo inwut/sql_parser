@@ -1,0 +1,35 @@
+reserved_keyword = {
+    "SELECT" | "FROM" | "JOIN" | "ON" | "WHERE" | "GROUP BY" |
+    "HAVING" | "ORDER BY" | "LIMIT" | "AND" | "OR" |
+    "COUNT" | "SUM" | "AVG" | "MAX" | "MIN" |
+    "ASC" | "DESC"
+}
+
+WHITESPACE     = _{ " " | "\t" | "\n" }
+identifier     = @{ !reserved_keyword ~ ASCII_ALPHA ~ (ASCII_ALPHANUMERIC | "_")* }
+number         =  @{ ASCII_DIGIT+ }
+string         =  { "\"" ~ (!"\"" ~ ANY)* ~ "\"" }
+comparison_op  =  { "!=" | ">=" | "<=" |">" | "<" | "=" }
+logical_op     =  { "AND" | "OR" }
+aggregate_func =  { "COUNT" | "SUM" | "AVG" | "MAX" | "MIN" }
+
+select_stmt = { "SELECT" ~ (agg_field ~ ("," ~ agg_field)* ~ ("," ~ identifier)*)
+~ from_clause
+~ (join_clause)? 
+~ (where_clause)?
+~ (group_by_clause)? 
+~ (order_by_clause)? 
+~ (limit_clause)? 
+~ ";" }
+
+agg_field = { aggregate_func ~ "(" ~ identifier ~ ")" | identifier }
+where_condition = { identifier ~ comparison_op ~ (number | string) }
+having_condition = { agg_field ~ comparison_op ~ (number | string) }
+
+from_clause = { "FROM" ~ identifier }
+join_clause = { "JOIN" ~ identifier ~ "ON" ~ identifier ~ "=" ~ identifier }
+where_clause = { "WHERE" ~ where_condition ~ (logical_op ~ where_condition)* }
+having_clause = { "HAVING" ~ having_condition ~ (logical_op ~ having_condition)* }
+group_by_clause = { "GROUP BY" ~ identifier ~ ("," ~ identifier)* ~ (having_clause)? }
+order_by_clause = { "ORDER BY" ~ identifier ~ ("ASC" | "DESC")? }
+limit_clause = { "LIMIT" ~ number }
