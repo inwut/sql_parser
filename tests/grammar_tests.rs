@@ -4,6 +4,18 @@ use sql_query_parser::*;
 
 #[test]
 fn test_whitespace() -> anyhow::Result<()> {
+    let pair = Grammar::parse(Rule::WHITESPACE, " ");
+    assert!(pair.is_ok());
+
+    let pair = Grammar::parse(Rule::WHITESPACE, "\t");
+    assert!(pair.is_ok());
+
+    let pair = Grammar::parse(Rule::WHITESPACE, "\n");
+    assert!(pair.is_ok());
+
+    let pair = Grammar::parse(Rule::WHITESPACE, "\r\n");
+    assert!(pair.is_ok());
+
     Grammar::parse(Rule::select_stmt, "SELECT a\r\nFROM b;")?
         .next()
         .ok_or_else(|| anyhow!("no pair"))?;
