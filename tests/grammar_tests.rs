@@ -3,6 +3,22 @@ use pest::Parser;
 use sql_query_parser::*;
 
 #[test]
+fn test_whitespace() -> anyhow::Result<()> {
+    Grammar::parse(Rule::select_stmt, "SELECT a\r\nFROM b;")?
+        .next()
+        .ok_or_else(|| anyhow!("no pair"))?;
+
+    Grammar::parse(Rule::select_stmt, "SELECT a\nFROM b;")?
+        .next()
+        .ok_or_else(|| anyhow!("no pair"))?;
+
+    let pair = Grammar::parse(Rule::WHITESPACE, "a");
+    assert!(pair.is_err());
+
+    Ok(())
+}
+
+#[test]
 fn test_identifier() -> anyhow::Result<()> {
     let pair = Grammar::parse(Rule::identifier, "id")?
         .next()
