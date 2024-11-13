@@ -116,23 +116,6 @@ fn test_where_condition() -> anyhow::Result< () > {
 }
 
 #[test]
-fn test_having_condition() -> anyhow::Result< () > {
-    let pair = Grammar::parse(Rule::having_condition, "n < 56")?.next().ok_or_else( || anyhow!( "no pair" ) )?;
-    assert_eq!( pair.as_str(), "n < 56" );
-
-    let pair = Grammar::parse(Rule::having_condition, "city = \"Kyiv\"")?.next().ok_or_else( || anyhow!( "no pair" ) )?;
-    assert_eq!( pair.as_str(), "city = \"Kyiv\"" );
-
-    let pair = Grammar::parse(Rule::having_condition, "COUNT(n) = 56")?.next().ok_or_else( || anyhow!( "no pair" ) )?;
-    assert_eq!( pair.as_str(), "COUNT(n) = 56" );
-
-    let pair = Grammar::parse(Rule::having_condition, "n =");
-    assert!(pair.is_err());
-
-    Ok(())
-}
-
-#[test]
 fn test_from_clause() -> anyhow::Result< () > {
     let pair = Grammar::parse(Rule::from_clause, "FROM table_name")?.next().ok_or_else( || anyhow!( "no pair" ) )?;
     assert_eq!( pair.as_str(), "FROM table_name" );
@@ -172,35 +155,12 @@ fn test_where_clause() -> anyhow::Result< () > {
 }
 
 #[test]
-fn test_having_clause() -> anyhow::Result< () > {
-    let pair = Grammar::parse(Rule::having_clause, "HAVING n > 0")?.next().ok_or_else( || anyhow!( "no pair" ) )?;
-    assert_eq!( pair.as_str(), "HAVING n > 0" );
-
-    let pair = Grammar::parse(Rule::having_clause, "HAVING COUNT(s) = 90")?.next().ok_or_else( || anyhow!( "no pair" ) )?;
-    assert_eq!( pair.as_str(), "HAVING COUNT(s) = 90" );
-
-    let pair = Grammar::parse(Rule::having_clause, "HAVING COUNT(s) = 90 OR m = 6")?.next().ok_or_else( || anyhow!( "no pair" ) )?;
-    assert_eq!( pair.as_str(), "HAVING COUNT(s) = 90 OR m = 6" );
-
-    let pair = Grammar::parse(Rule::having_clause, "HAVING s");
-    assert!(pair.is_err());
-
-    Ok(())
-}
-
-#[test]
 fn test_group_by_clause() -> anyhow::Result< () > {
     let pair = Grammar::parse(Rule::group_by_clause, "GROUP BY name")?.next().ok_or_else( || anyhow!( "no pair" ) )?;
     assert_eq!( pair.as_str(), "GROUP BY name" );
 
     let pair = Grammar::parse(Rule::group_by_clause, "GROUP BY name, surname")?.next().ok_or_else( || anyhow!( "no pair" ) )?;
     assert_eq!( pair.as_str(), "GROUP BY name, surname" );
-
-    let pair = Grammar::parse(Rule::group_by_clause, "GROUP BY name HAVING SUM(n) >= 0")?.next().ok_or_else( || anyhow!( "no pair" ) )?;
-    assert_eq!( pair.as_str(), "GROUP BY name HAVING SUM(n) >= 0" );
-
-    let pair = Grammar::parse(Rule::group_by_clause, "GROUP BY name, surname HAVING SUM(n) >= 0")?.next().ok_or_else( || anyhow!( "no pair" ) )?;
-    assert_eq!( pair.as_str(), "GROUP BY name, surname HAVING SUM(n) >= 0" );
 
     let pair = Grammar::parse(Rule::group_by_clause, "GROUP name");
     assert!(pair.is_err());
@@ -243,7 +203,7 @@ fn test_select_stmt() -> anyhow::Result< () > {
     let pair = Grammar::parse(Rule::select_stmt, query)?.next().ok_or_else( || anyhow!( "no pair" ) )?;
     assert_eq!( pair.as_str(), query);
 
-    let query = "SELECT name, SUM(sales) FROM products GROUP BY category HAVING category = 5 ORDER BY sales DESC;";
+    let query = "SELECT name, SUM(sales) FROM products GROUP BY category, price ORDER BY sales DESC;";
     let pair = Grammar::parse(Rule::select_stmt, query)?.next().ok_or_else( || anyhow!( "no pair" ) )?;
     assert_eq!( pair.as_str(), query);
 

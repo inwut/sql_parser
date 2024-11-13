@@ -8,3 +8,4 @@ description = "The sql_parser project provides a custom Rust parser for SQL-like
 anyhow = "1.0.93"
 pest = "2.7.14"
 pest_derive = "2.7.14"
+thiserror = "2.0.3"
