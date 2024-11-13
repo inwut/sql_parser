@@ -1,5 +1,7 @@
 ## sql_parser
 
+### Overview
+
 The `sql_parser` project provides a custom Rust parser for SQL-like queries, implemented using the Pest crate. It can parse SELECT statements with advanced query capabilities, including joins, conditional filtering, aggregate functions, grouping, ordering, and limiting the results.
 
 ### Technical Description
@@ -13,7 +15,7 @@ The `sql_parser` processes base SQL-like clauses, specifically:
 * **SELECT clause**: Allows selecting fields or using aggregate functions (`COUNT`, `SUM`, `AVG`, `MAX`, `MIN`) on them.
 * **FROM and JOIN clauses**: Defines data sources and relationships between them using `JOIN` and `ON` with `=` condition on fields.
 * **WHERE clause**: Filters records with conditions on fields, supporting comparison (`=`, `!=`, `<`, `>`, `<=`, `>=`) and logical (`AND`, `OR`) operators.
-* **GROUP BY and HAVING clauses**: Enables grouping of results by multiple fields.
+* **GROUP BY clause**: Enables grouping of results by multiple fields.
 * **ORDER BY clause**: Orders results based on specified fields, supporting ascending (`ASC`) and descending (`DESC`) sorting.
 * **LIMIT clause**: Limits the number of returned results.
 
@@ -24,10 +26,10 @@ After parsing, each node of the AST is displayed in a custom format defined in t
 ``` sql
 SELECT name, SUM(sales)
 FROM products
-WHERE quantity = 50 AND producer = "Producer"
-GROUP BY category, price1
+WHERE quantity >= 50 AND producer = "Producer"
+GROUP BY category, price
 ORDER BY sales DESC
-LIMIT 20;
+LIMIT 20; 
 ```
 ### Example Output
 
@@ -41,7 +43,7 @@ LIMIT 20;
   - where_clause
     - where_condition
         - identifier: "quantity"
-        - comparison_op: "="
+        - comparison_op: ">="
         - number: "50"
     - logical_op: "AND"
     - where_condition
@@ -50,7 +52,7 @@ LIMIT 20;
         - identifier: "\"Producer\""
   - group_by_clause
     - identifier: "category"
-    - identifier: "price1"
+    - identifier: "price"
   - order_by_clause
     - identifier: "sales"
     - order_type: "DESC"

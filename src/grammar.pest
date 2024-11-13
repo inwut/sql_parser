@@ -1,3 +1,4 @@
+/// Reserved SQL keywords that cannot be used as identifiers.
 reserved_keyword = {
     "SELECT" | "FROM" | "JOIN" | "ON" | "WHERE" | "GROUP BY" |
     "HAVING" | "ORDER BY" | "LIMIT" | "AND" | "OR" |
@@ -5,15 +6,25 @@ reserved_keyword = {
     "ASC" | "DESC"
 }
 
+/// Whitespace characters, including spaces, tabs, and newlines.
 WHITESPACE     = _{ " " | "\t" | "\n" | "\r\n"}
+/// Valid SQL identifier, which cannot be a reserved keyword and
+/// must start with a letter, followed by letters, numbers, or underscores.
 identifier     = @{ !reserved_keyword ~ ASCII_ALPHA ~ (ASCII_ALPHANUMERIC | "_")* }
+/// Numeric literals, consisting of one or more digits.
 number         =  @{ ASCII_DIGIT+ }
+/// String literals, enclosed in double quotes.
 string         =  { "\"" ~ (!"\"" ~ ANY)* ~ "\"" }
+/// Comparison operators for SQL conditions.
 comparison_op  =  { "!=" | ">=" | "<=" |">" | "<" | "=" }
+/// Logical operators used to combine conditions in WHERE clauses.
 logical_op     =  { "AND" | "OR" }
+/// Supported SQL aggregate functions.
 aggregate_func =  { "COUNT" | "SUM" | "AVG" | "MAX" | "MIN" }
+/// Specifies sorting order: ascending or descending.
 order_type     =  { "ASC" | "DESC"}
 
+/// Complete SQL SELECT statement syntax, including optional clauses.
 select_stmt = { "SELECT" ~ (agg_field ~ ("," ~ agg_field)* ~ ("," ~ identifier)*)
 ~ from_clause
 ~ (join_clause)? 
@@ -23,12 +34,20 @@ select_stmt = { "SELECT" ~ (agg_field ~ ("," ~ agg_field)* ~ ("," ~ identifier)*
 ~ (limit_clause)? 
 ~ ";" }
 
+/// Aggregate field in SELECT, which can include a function or just an identifier.
 agg_field = { aggregate_func ~ "(" ~ identifier ~ ")" | identifier }
+/// Single WHERE clause condition with an identifier, comparison operator, and value, which can be a string or a number.
 where_condition = { identifier ~ comparison_op ~ (number | string) }
 
+/// FROM clause, specifying the primary table for the query.
 from_clause = { "FROM" ~ identifier }
+/// JOIN clause, specifying the table to join and the columns for the join condition.
 join_clause = { "JOIN" ~ identifier ~ "ON" ~ identifier ~ "=" ~ identifier }
+/// WHERE clause, allowing multiple conditions joined by logical operators.
 where_clause = { "WHERE" ~ where_condition ~ (logical_op ~ where_condition)* }
+/// GROUP BY clause, specifying columns for grouping results.
 group_by_clause = { "GROUP BY" ~ identifier ~ ("," ~ identifier)* }
+/// ORDER BY clause, specifying columns and order for sorting results.
 order_by_clause = { "ORDER BY" ~ identifier ~ (order_type)? ~ ("," ~ identifier ~ (order_type)?)* }
+/// LIMIT clause, specifying the maximum number of results.
 limit_clause = { "LIMIT" ~ number }

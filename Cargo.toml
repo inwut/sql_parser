@@ -2,7 +2,9 @@
 name = "sql_parser"
 version = "0.1.0"
 edition = "2021"
+license = "MIT"
 description = "The sql_parser project provides a custom Rust parser for SQL-like queries, implemented using the Pest crate. It can parse SELECT statements with advanced query capabilities, including joins, conditional filtering, aggregate functions, grouping, ordering, and limiting the results."
+readme = "README.md"
 
 [dependencies]
 anyhow = "1.0.93"

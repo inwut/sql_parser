@@ -1,15 +1,14 @@
 use pest::Parser;
-use anyhow::anyhow;
+use sql_parser::*;
 use std::env;
 use std::fs;
-use sql_parser::*;
 
-fn main() {
+fn main() -> anyhow::Result<()> {
     let args: Vec<String> = env::args().collect();
 
     if args.len() < 2 {
         print_help();
-        return;
+        return Ok(());
     }
 
     match args[1].as_str() {
@@ -19,12 +18,13 @@ fn main() {
             let file_content = fs::read_to_string(input_file).expect("Could not open file.");
             match parse_sql(&file_content) {
                 Ok(parsed_data) => println!("{}", parsed_data),
-                Err(e) => eprintln!("Parsing error: {}", e),
+                Err(e) => eprintln!("Error: {}", e),
             }
         }
     }
-}
 
+    Ok(())
+}
 
 fn print_help() {
     println!("SQL query parser:");

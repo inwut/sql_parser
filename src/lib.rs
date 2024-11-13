@@ -15,21 +15,30 @@ pub enum SQLError {
 
 #[derive(Debug)]
 pub enum SQLNode {
-    AggField { func: Option<String>, identifier: String },
+    AggField {
+        func: Option<String>,
+        identifier: String,
+    },
     SelectStmt(Vec<SQLNode>),
     FromClause(String),
-    JoinClause { table: String, left: String, right: String },
+    JoinClause {
+        table: String,
+        left: String,
+        right: String,
+    },
     WhereClause(Vec<SQLNode>),
     WhereCondition(Vec<SQLNode>),
     GroupByClause(Vec<SQLNode>),
-    OrderByClause { identifier: String, order_type: Option<String> },
+    OrderByClause {
+        identifier: String,
+        order_type: Option<String>,
+    },
     LimitClause(String),
     Identifier(String),
     Number(String),
     ComparisonOp(String),
     LogicalOp(String),
 }
-
 
 impl fmt::Display for SQLNode {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -79,7 +88,10 @@ impl fmt::Display for SQLNode {
                 }
                 Ok(())
             }
-            SQLNode::OrderByClause { identifier, order_type } => {
+            SQLNode::OrderByClause {
+                identifier,
+                order_type,
+            } => {
                 write!(f, "- order_by_clause\n    - identifier: {:?}", identifier)?;
                 if let Some(order) = order_type {
                     write!(f, "\n    - order_type: {:?}", order)?;
@@ -96,22 +108,22 @@ impl fmt::Display for SQLNode {
 }
 
 pub fn parse_sql(input: &str) -> Result<SQLNode, SQLError> {
-    let mut parsed = 
-        Grammar::parse(Rule::select_stmt, input).map_err(|e| SQLError::ParseError(e.to_string()))?;
+    let mut parsed = Grammar::parse(Rule::select_stmt, input)
+        .map_err(|e| SQLError::ParseError(e.to_string()))?;
     let mut nodes = Vec::new();
-    
+
     for pair in parsed.next().unwrap().into_inner() {
         match pair.as_rule() {
             Rule::agg_field => {
                 let mut inner_pairs = pair.into_inner();
                 let func_pair = inner_pairs.next().unwrap();
-                
+
                 let identifier = if func_pair.as_rule() == Rule::aggregate_func {
                     inner_pairs.next().unwrap().as_str().to_string()
                 } else {
                     func_pair.as_str().to_string()
                 };
-                
+
                 let func = if func_pair.as_rule() == Rule::aggregate_func {
                     Some(func_pair.as_str().to_string())
                 } else {
@@ -168,17 +180,21 @@ pub fn parse_sql(input: &str) -> Result<SQLNode, SQLError> {
                 nodes.push(SQLNode::WhereClause(conditions));
             }
             Rule::group_by_clause => {
-                let identifiers = pair.into_inner().map(|ident| {
-                    SQLNode::Identifier(ident.as_str().to_string())
-                }).collect();
-                
+                let identifiers = pair
+                    .into_inner()
+                    .map(|ident| SQLNode::Identifier(ident.as_str().to_string()))
+                    .collect();
+
                 nodes.push(SQLNode::GroupByClause(identifiers));
             }
             Rule::order_by_clause => {
                 let mut inner_pairs = pair.into_inner();
                 let identifier = inner_pairs.next().unwrap().as_str().to_string();
                 let order_type = inner_pairs.next().map(|p| p.as_str().to_string());
-                nodes.push(SQLNode::OrderByClause { identifier, order_type });
+                nodes.push(SQLNode::OrderByClause {
+                    identifier,
+                    order_type,
+                });
             }
             Rule::limit_clause => {
                 let limit_num = pair.into_inner().next().unwrap().as_str().to_string();
