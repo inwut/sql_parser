@@ -3,6 +3,34 @@ use pest::Parser;
 use sql_query_parser::*;
 
 #[test]
+fn test_reserved_keyword() -> anyhow::Result<()> {
+    let pair = Grammar::parse(Rule::reserved_keyword, "ORDER BY")?
+        .next()
+        .ok_or_else(|| anyhow!("no pair"))?;
+    assert_eq!(pair.as_str(), "ORDER BY");
+
+    let pair = Grammar::parse(Rule::reserved_keyword, "ASC")?
+        .next()
+        .ok_or_else(|| anyhow!("no pair"))?;
+    assert_eq!(pair.as_str(), "ASC");
+
+    let pair = Grammar::parse(Rule::reserved_keyword, "SELECT")?
+        .next()
+        .ok_or_else(|| anyhow!("no pair"))?;
+    assert_eq!(pair.as_str(), "SELECT");
+
+    let pair = Grammar::parse(Rule::reserved_keyword, "GROUP BY")?
+        .next()
+        .ok_or_else(|| anyhow!("no pair"))?;
+    assert_eq!(pair.as_str(), "GROUP BY");
+
+    let pair = Grammar::parse(Rule::reserved_keyword, "id");
+    assert!(pair.is_err());
+
+    Ok(())
+}
+
+#[test]
 fn test_whitespace() -> anyhow::Result<()> {
     let pair = Grammar::parse(Rule::WHITESPACE, " ");
     assert!(pair.is_ok());
