@@ -1,5 +1,11 @@
 ## sql_query_parser
 
+### Links
+
+Crate: https://crates.io/crates/sql_query_parser 
+
+Docs: https://docs.rs/sql_query_parser/latest/sql_query_parser/
+
 ### Overview
 
 The `sql_query_parser` project provides a custom Rust parser for SQL-like queries, implemented using the Pest crate. It can parse SELECT statements with advanced query capabilities, including joins, conditional filtering, aggregate functions, grouping, ordering, and limiting the results.
