@@ -1,7 +1,7 @@
 /// Reserved SQL keywords that cannot be used as identifiers.
 reserved_keyword = {
     "SELECT" | "FROM" | "JOIN" | "ON" | "WHERE" | "GROUP BY" |
-    "HAVING" | "ORDER BY" | "LIMIT" | "AND" | "OR" |
+    "ORDER BY" | "LIMIT" | "AND" | "OR" |
     "COUNT" | "SUM" | "AVG" | "MAX" | "MIN" |
     "ASC" | "DESC"
 }

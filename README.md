@@ -19,7 +19,11 @@ The `sql_parser` processes base SQL-like clauses, specifically:
 * **ORDER BY clause**: Orders results based on specified fields, supporting ascending (`ASC`) and descending (`DESC`) sorting.
 * **LIMIT clause**: Limits the number of returned results.
 
-After parsing, each node of the AST is displayed in a custom format defined in the `fmt::Display` implementation, which organizes the output in a clear, indented format.
+After parsing, each node of the AST is displayed in a custom format defined in the `fmt::Display` implementation, which organizes the output in a clear, indented format. It can be useful for:
+
+* Analyzing query structure and understanding the components of the SQL query.
+* Identifying key parts of the query for optimization decisions.
+* Providing a clear structure to easily check for syntax errors in SQL queries.
 
 ### Example Input
 
@@ -64,7 +68,7 @@ LIMIT 20;
 ```
 reserved_keyword = {
     "SELECT" | "FROM" | "JOIN" | "ON" | "WHERE" | "GROUP BY" |
-    "HAVING" | "ORDER BY" | "LIMIT" | "AND" | "OR" |
+    "ORDER BY" | "LIMIT" | "AND" | "OR" |
     "COUNT" | "SUM" | "AVG" | "MAX" | "MIN" |
     "ASC" | "DESC"
 }
