@@ -12,8 +12,9 @@ fn test_whitespace() -> anyhow::Result<()> {
         .next()
         .ok_or_else(|| anyhow!("no pair"))?;
 
-    let pair = Grammar::parse(Rule::WHITESPACE, "a");
-    assert!(pair.is_err());
+    Grammar::parse(Rule::select_stmt, "SELECT a\tFROM b;")?
+        .next()
+        .ok_or_else(|| anyhow!("no pair"))?;
 
     Ok(())
 }
