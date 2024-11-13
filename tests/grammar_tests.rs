@@ -1,6 +1,6 @@
 use anyhow::anyhow;
 use pest::Parser;
-use sql_parser::*;
+use sql_query_parser::*;
 
 #[test]
 fn test_identifier() -> anyhow::Result<()> {

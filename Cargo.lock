@@ -155,7 +155,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "sql_parser"
+name = "sql_query_parser"
 version = "0.1.0"
 dependencies = [
  "anyhow",

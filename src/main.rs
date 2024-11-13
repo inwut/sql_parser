@@ -1,5 +1,5 @@
 use pest::Parser;
-use sql_parser::*;
+use sql_query_parser::*;
 use std::env;
 use std::fs;
 
